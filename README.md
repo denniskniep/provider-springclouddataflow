@@ -38,7 +38,7 @@ stringData:
       "url": "http://dataflow:9393/"
     }
 ---
-apiVersion: temporal.crossplane.io/v1alpha1
+apiVersion: springclouddataflow.crossplane.io/v1alpha1
 kind: ProviderConfig
 metadata:
   name: provider-spring-cloud-dataflow-config
@@ -72,9 +72,9 @@ spec:
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-temporal
+  name: provider-spring-cloud-dataflow
 spec:
-  package: xpkg.upbound.io/denniskniep/provider-spring-cloud-dataflow:v1.0.0
+  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:v0.0.1
   packagePullPolicy: IfNotPresent
   revisionActivationPolicy: Automatic
   runtimeConfigRef:
@@ -85,6 +85,29 @@ spec:
 Currently covered Managed Resources:
 - [Application](#application)
 
+## Application 
+
+[docs](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#applications) 
+
+[rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#resources-registered-applications)
+
+Example:
+```
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: Application
+metadata:
+  name: app-1
+spec:
+  forProvider:
+    name: "App001"
+    type: "task"
+    version: "v1.0.0"
+    uri: "docker://hello-world:v1.0.0"
+    bootVersion: "2"
+    defaultVersion: true
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config
+```
 
 # Contribute
 ## Developing
