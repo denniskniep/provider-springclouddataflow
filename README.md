@@ -11,7 +11,7 @@ xpkg.upbound.io/denniskniep/provider-springclouddataflow:v0.0.1
 Provider Credentials:
 ```
 {
-  "Url": "http://dataflow:9393/"
+  "url": "http://dataflow:9393/"
 }
 ```
 
@@ -35,7 +35,7 @@ type: Opaque
 stringData:
   credentials: |
     {
-      "Url": "http://dataflow:9393/"
+      "url": "http://dataflow:9393/"
     }
 ---
 apiVersion: temporal.crossplane.io/v1alpha1

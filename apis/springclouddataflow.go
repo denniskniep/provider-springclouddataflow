@@ -20,6 +20,7 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
+	corev1alpha1 "github.com/crossplane/provider-springclouddataflow/apis/core/v1alpha1"
 	springclouddataflowv1alpha1 "github.com/crossplane/provider-springclouddataflow/apis/v1alpha1"
 )
 
@@ -27,6 +28,7 @@ func init() {
 	// Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
 	AddToSchemes = append(AddToSchemes,
 		springclouddataflowv1alpha1.SchemeBuilder.AddToScheme,
+		corev1alpha1.SchemeBuilder.AddToScheme,
 	)
 }
 
