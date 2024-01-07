@@ -36,10 +36,10 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 
-	"github.com/crossplane/provider-springclouddataflow/apis"
-	"github.com/crossplane/provider-springclouddataflow/apis/v1alpha1"
-	springclouddataflow "github.com/crossplane/provider-springclouddataflow/internal/controller"
-	"github.com/crossplane/provider-springclouddataflow/internal/features"
+	"github.com/denniskniep/provider-springclouddataflow/apis"
+	"github.com/denniskniep/provider-springclouddataflow/apis/v1alpha1"
+	springclouddataflow "github.com/denniskniep/provider-springclouddataflow/internal/controller"
+	"github.com/denniskniep/provider-springclouddataflow/internal/features"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	core "github.com/crossplane/provider-springclouddataflow/apis/core/v1alpha1"
+	core "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	"github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2/client/apps"
 	kiota "github.com/microsoft/kiota-abstractions-go"
 )

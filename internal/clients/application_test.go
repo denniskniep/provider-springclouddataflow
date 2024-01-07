@@ -3,7 +3,7 @@ package clients
 import (
 	"testing"
 
-	core "github.com/crossplane/provider-springclouddataflow/apis/core/v1alpha1"
+	core "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/net/context"
 )

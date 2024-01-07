@@ -20,10 +20,10 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 
-	"github.com/crossplane/provider-springclouddataflow/apis/core/v1alpha1"
-	apisv1alpha1 "github.com/crossplane/provider-springclouddataflow/apis/v1alpha1"
-	clients "github.com/crossplane/provider-springclouddataflow/internal/clients"
-	"github.com/crossplane/provider-springclouddataflow/internal/features"
+	"github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
+	apisv1alpha1 "github.com/denniskniep/provider-springclouddataflow/apis/v1alpha1"
+	clients "github.com/denniskniep/provider-springclouddataflow/internal/clients"
+	"github.com/denniskniep/provider-springclouddataflow/internal/features"
 )
 
 const (

@@ -1,4 +1,4 @@
-module github.com/crossplane/provider-springclouddataflow
+module github.com/denniskniep/provider-springclouddataflow
 
 go 1.20
 

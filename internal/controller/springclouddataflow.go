@@ -20,8 +20,8 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/controller"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	application "github.com/crossplane/provider-springclouddataflow/internal/controller/application"
-	"github.com/crossplane/provider-springclouddataflow/internal/controller/config"
+	application "github.com/denniskniep/provider-springclouddataflow/internal/controller/application"
+	"github.com/denniskniep/provider-springclouddataflow/internal/controller/config"
 )
 
 // Setup creates all SpringCloudDataFlow controllers with the supplied logger and adds them to

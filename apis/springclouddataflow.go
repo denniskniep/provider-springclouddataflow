@@ -20,8 +20,8 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	corev1alpha1 "github.com/crossplane/provider-springclouddataflow/apis/core/v1alpha1"
-	springclouddataflowv1alpha1 "github.com/crossplane/provider-springclouddataflow/apis/v1alpha1"
+	corev1alpha1 "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
+	springclouddataflowv1alpha1 "github.com/denniskniep/provider-springclouddataflow/apis/v1alpha1"
 )
 
 func init() {
