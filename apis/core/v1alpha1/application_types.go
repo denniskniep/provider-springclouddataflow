@@ -27,12 +27,32 @@ import (
 
 // ApplicationParameters are the configurable fields of a Application.
 type ApplicationParameters struct {
-	ConfigurableField string `json:"configurableField"`
+
+	// Name of the Application (immutable)
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Name is immutable"
+	Name string `json:"name"`
+
+	// Type of the Application (immutable)
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Name is immutable"
+	// +kubebuilder:validation:Enum=app;source;processor;sink;task
+	Type string `json:"type"`
+
+	Version        string `json:"version"`
+	Uri            string `json:"uri"`
+	DefaultVersion bool   `json:"defaultVersion"`
+	BootVersion    string `json:"bootVersion"`
 }
 
 // ApplicationObservation are the observable fields of a Application.
 type ApplicationObservation struct {
-	ObservableField string `json:"observableField,omitempty"`
+	Name           string `json:"name"`
+	Type           string `json:"type"`
+	Version        string `json:"version"`
+	Uri            string `json:"uri"`
+	DefaultVersion bool   `json:"defaultVersion"`
+	BootVersion    string `json:"bootVersion"`
 }
 
 // A ApplicationSpec defines the desired state of a Application.

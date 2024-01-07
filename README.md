@@ -1,33 +1,104 @@
-# provider-springclouddataflow
+# Spring Cloud Data Flow Provider
 
-`provider-springclouddataflow` is a minimal [Crossplane](https://crossplane.io/) Provider
-that is meant to be used as a springclouddataflow for implementing new Providers. It comes
-with the following features that are meant to be refactored:
+Spring Cloud Data Flow Provider is a [Crossplane](https://www.crossplane.io/) provider. It was build based on the [Crossplane Template](https://github.com/crossplane/provider-template). It is used to manage and configure [Spring Cloud Data Flow](https://dataflow.spring.io/). It uses the [Rest API](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#api-guide-resources)
 
-- A `ProviderConfig` type that only points to a credentials `Secret`.
-- A `MyType` resource type that serves as an example managed resource.
-- A managed resource controller that reconciles `MyType` objects and simply
-  prints their configuration in its `Observe` method.
-
-## Developing
-
-1. Use this repository as a springclouddataflow to create a new one.
-1. Run `make submodules` to initialize the "build" Make submodule we use for CI/CD.
-1. Rename the provider by running the following command:
-```shell
-  export provider_name=MyProvider # Camel case, e.g. GitHub
-  make provider.prepare provider=${provider_name}
+# How to use 
+Repository and package:
 ```
-4. Add your new type by running the following command:
+xpkg.upbound.io/denniskniep/provider-springclouddataflow:v0.0.1
+```
+
+Provider Credentials:
+```
+{
+  "Url": "http://dataflow:9393/"
+}
+```
+
+Example:
+```
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-spring-cloud-dataflow
+spec:
+  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:v0.0.1
+  packagePullPolicy: IfNotPresent
+  revisionActivationPolicy: Automatic
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: provider-spring-cloud-dataflow-config-creds
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  credentials: |
+    {
+      "Url": "http://dataflow:9393/"
+    }
+---
+apiVersion: temporal.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: provider-spring-cloud-dataflow-config
+spec: 
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: provider-spring-cloud-dataflow-config-creds
+      key: credentials  
+```
+# Troubleshooting
+Create a DeploymentRuntimeConfig and set the arg `--debug` on the package-runtime container:
+
+```
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: debug-config
+spec:
+  deploymentTemplate:
+    spec:
+      selector: {}
+      template:
+        spec:
+          containers:
+            - name: package-runtime
+              args:
+                - --debug
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-temporal
+spec:
+  package: xpkg.upbound.io/denniskniep/provider-spring-cloud-dataflow:v1.0.0
+  packagePullPolicy: IfNotPresent
+  revisionActivationPolicy: Automatic
+  runtimeConfigRef:
+    name: debug-config
+```
+
+# Covered Managed Resources
+Currently covered Managed Resources:
+- [Application](#application)
+
+
+# Contribute
+## Developing
+1. Add new type by running the following command:
 ```shell
-  export group=sample # lower case e.g. core, cache, database, storage, etc.
+  export provider_name=SpringCloudDataFlow
+  export group=core # lower case e.g. core, cache, database, storage, etc.
   export type=MyType # Camel casee.g. Bucket, Database, CacheCluster, etc.
   make provider.addtype provider=${provider_name} group=${group} kind=${type}
 ```
-5. Replace the *sample* group with your new group in apis/{provider}.go
-5. Replace the *mytype* type with your new type in internal/controller/{provider}.go
-5. Replace the default controller and ProviderConfig implementations with your own
-5. Run `make reviewable` to run code generation, linters, and tests.
+2. Replace the *core* group with your new group in apis/{provider}.go
+3. Replace the *MyType* type with your new type in internal/controller/{provider}.go
+
+4. Run `make reviewable` to run code generation, linters, and tests. (`make generate` to only run code generation)
 5. Run `make build` to build the provider.
 
 Refer to Crossplane's [CONTRIBUTING.md] file for more information on how the
@@ -36,3 +107,14 @@ guide may also be of use.
 
 [CONTRIBUTING.md]: https://github.com/crossplane/crossplane/blob/master/CONTRIBUTING.md
 [provider-dev]: https://github.com/crossplane/crossplane/blob/master/contributing/guide-provider-development.md
+
+## Tests
+Start SpringCloudDataFlow environment for tests
+```
+sudo docker-compose -f tests/docker-compose.yaml up 
+```
+UI: http://localhost:9393/dashboard
+OpenAPI Spec: http://localhost:9393/v3/api-docs
+Swagger-Ui: http://localhost:9393/swagger-ui/index.html
+
+

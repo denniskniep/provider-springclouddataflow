@@ -68,10 +68,39 @@ spec:
                 description: ApplicationParameters are the configurable fields of
                   a Application.
                 properties:
-                  configurableField:
+                  bootVersion:
+                    type: string
+                  defaultVersion:
+                    type: boolean
+                  name:
+                    description: Name of the Application (immutable)
+                    type: string
+                    x-kubernetes-validations:
+                    - message: Name is immutable
+                      rule: self == oldSelf
+                  type:
+                    description: Type of the Application (immutable)
+                    enum:
+                    - app
+                    - source
+                    - processor
+                    - sink
+                    - task
+                    type: string
+                    x-kubernetes-validations:
+                    - message: Name is immutable
+                      rule: self == oldSelf
+                  uri:
+                    type: string
+                  version:
                     type: string
                 required:
-                - configurableField
+                - bootVersion
+                - defaultVersion
+                - name
+                - type
+                - uri
+                - version
                 type: object
               managementPolicies:
                 default:
@@ -277,8 +306,25 @@ spec:
                 description: ApplicationObservation are the observable fields of a
                   Application.
                 properties:
-                  observableField:
+                  bootVersion:
                     type: string
+                  defaultVersion:
+                    type: boolean
+                  name:
+                    type: string
+                  type:
+                    type: string
+                  uri:
+                    type: string
+                  version:
+                    type: string
+                required:
+                - bootVersion
+                - defaultVersion
+                - name
+                - type
+                - uri
+                - version
                 type: object
               conditions:
                 description: Conditions of the resource.
