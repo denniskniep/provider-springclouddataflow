@@ -84,6 +84,7 @@ spec:
 # Covered Managed Resources
 Currently covered Managed Resources:
 - [Application](#application)
+- [TaskDefinition](#taskdefinition)
 
 ## Application 
 
@@ -105,6 +106,27 @@ spec:
     uri: "docker://hello-world:v1.0.0"
     bootVersion: "2"
     defaultVersion: true
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config
+```
+
+## TaskDefinition 
+
+[docs](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#spring-cloud-dataflow-task) 
+
+[rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#api-guide-resources-task-definitions)
+
+Example:
+```
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: TaskDefinition
+metadata:
+  name: task-1
+spec:
+  forProvider:
+    name: "MyTask01"
+    description: "Test Task"
+    definition: "App001"
   providerConfigRef:
     name: provider-spring-cloud-dataflow-config
 ```
@@ -136,8 +158,11 @@ Start SpringCloudDataFlow environment for tests
 ```
 sudo docker-compose -f tests/docker-compose.yaml up 
 ```
+
 UI: http://localhost:9393/dashboard
+
 OpenAPI Spec: http://localhost:9393/v3/api-docs
+
 Swagger-Ui: http://localhost:9393/swagger-ui/index.html
 
 

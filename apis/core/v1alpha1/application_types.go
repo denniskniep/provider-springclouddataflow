@@ -35,14 +35,28 @@ type ApplicationParameters struct {
 
 	// Type of the Application (immutable)
 	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Name is immutable"
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Type is immutable"
 	// +kubebuilder:validation:Enum=app;source;processor;sink;task
 	Type string `json:"type"`
 
-	Version        string `json:"version"`
-	Uri            string `json:"uri"`
-	DefaultVersion bool   `json:"defaultVersion"`
-	BootVersion    string `json:"bootVersion"`
+	// Version of the Application (immutable)
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Version is immutable"
+	Version string `json:"version"`
+
+	// Uri of the Application (immutable)
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Uri is immutable"
+	Uri string `json:"uri"`
+
+	// Is this Application the Default
+	// +kubebuilder:validation:Required
+	DefaultVersion bool `json:"defaultVersion"`
+
+	// BootVersion of the Application (immutable)
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="BootVersion is immutable"
+	BootVersion string `json:"bootVersion"`
 }
 
 // ApplicationObservation are the observable fields of a Application.

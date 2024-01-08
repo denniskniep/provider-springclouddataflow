@@ -22,6 +22,7 @@ import (
 
 	application "github.com/denniskniep/provider-springclouddataflow/internal/controller/application"
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/config"
+	"github.com/denniskniep/provider-springclouddataflow/internal/controller/taskdefinition"
 )
 
 // Setup creates all SpringCloudDataFlow controllers with the supplied logger and adds them to
@@ -30,6 +31,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		config.Setup,
 		application.Setup,
+		taskdefinition.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err

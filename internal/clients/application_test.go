@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func createApplicationService(t *testing.T) ApplicationService {
+func CreateApplicationService(t *testing.T) ApplicationService {
 	jsonConfig := `{
 		"Uri": "http://localhost:9393/"
 	}`
@@ -21,7 +21,7 @@ func createApplicationService(t *testing.T) ApplicationService {
 	return srv
 }
 
-func createDefaultApplication(appType string, name string, version string) *core.ApplicationParameters {
+func CreateDefaultApplication(appType string, name string, version string) *core.ApplicationParameters {
 	return &core.ApplicationParameters{
 		Type:           appType,
 		Name:           name,
@@ -32,70 +32,70 @@ func createDefaultApplication(appType string, name string, version string) *core
 	}
 }
 
-func TestCreate(t *testing.T) {
+func TestCreateApplication(t *testing.T) {
 	skipIfIsShort(t)
 
-	srv := createApplicationService(t)
-	testApp := createDefaultApplication("task", "Test001", "v1.0.0")
+	srv := CreateApplicationService(t)
+	testApp := CreateDefaultApplication("task", "Test001", "v1.0.0")
 
-	createdApp := create(t, srv, testApp)
+	createdApp := CreateApplication(t, srv, testApp)
 
-	assertApplicationAreEqual(t, srv, createdApp, testApp)
+	AssertApplicationAreEqual(t, srv, createdApp, testApp)
 
-	delete(t, srv, testApp)
+	DeleteApplication(t, srv, testApp)
 }
 
 func TestDeleteNotExisting(t *testing.T) {
 	skipIfIsShort(t)
-	srv := createApplicationService(t)
-	testApp := createDefaultApplication("task", "Test999", "v1.0.0")
-	delete(t, srv, testApp)
+	srv := CreateApplicationService(t)
+	testApp := CreateDefaultApplication("task", "Test999", "v1.0.0")
+	DeleteApplication(t, srv, testApp)
 }
 
 func TestUpdateNotExisting(t *testing.T) {
 	skipIfIsShort(t)
-	srv := createApplicationService(t)
-	testApp := createDefaultApplication("task", "Test888", "v1.0.0")
-	update(t, srv, testApp)
+	srv := CreateApplicationService(t)
+	testApp := CreateDefaultApplication("task", "Test888", "v1.0.0")
+	UpdateApplication(t, srv, testApp)
 }
 
 func TestUpdate(t *testing.T) {
 	skipIfIsShort(t)
 
-	srv := createApplicationService(t)
-	testAppV1 := createDefaultApplication("task", "Test002", "v1.0.0")
-	createdAppV1 := create(t, srv, testAppV1)
-	assertApplicationAreEqual(t, srv, createdAppV1, testAppV1)
+	srv := CreateApplicationService(t)
+	testAppV1 := CreateDefaultApplication("task", "Test002", "v1.0.0")
+	createdAppV1 := CreateApplication(t, srv, testAppV1)
+	AssertApplicationAreEqual(t, srv, createdAppV1, testAppV1)
 
-	testAppV2 := createDefaultApplication("task", "Test002", "v2.0.0")
+	testAppV2 := CreateDefaultApplication("task", "Test002", "v2.0.0")
 	testAppV2.DefaultVersion = false
-	createdAppV2 := create(t, srv, testAppV2)
-	assertApplicationAreEqual(t, srv, createdAppV2, testAppV2)
+	createdAppV2 := CreateApplication(t, srv, testAppV2)
+	AssertApplicationAreEqual(t, srv, createdAppV2, testAppV2)
 
 	testAppV1.DefaultVersion = false
 	testAppV2.DefaultVersion = true
-	update(t, srv, testAppV1)
-	update(t, srv, testAppV2)
+	UpdateApplication(t, srv, testAppV1)
+	UpdateApplication(t, srv, testAppV2)
 
 	foundAppV1, err := srv.DescribeApplication(context.Background(), testAppV1)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assertApplicationAreEqual(t, srv, foundAppV1, testAppV1)
+	AssertApplicationAreEqual(t, srv, foundAppV1, testAppV1)
 
 	foundAppV2, err := srv.DescribeApplication(context.Background(), testAppV2)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assertApplicationAreEqual(t, srv, foundAppV2, testAppV2)
+	AssertApplicationAreEqual(t, srv, foundAppV2, testAppV2)
 
-	delete(t, srv, testAppV1)
-	delete(t, srv, testAppV2)
+	DeleteApplication(t, srv, testAppV1)
+	DeleteApplication(t, srv, testAppV2)
 }
 
-func update(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) {
+func UpdateApplication(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) {
 	t.Helper()
 	err := srv.UpdateApplication(context.Background(), app)
 	if err != nil {
@@ -103,7 +103,7 @@ func update(t *testing.T, srv ApplicationService, app *core.ApplicationParameter
 	}
 }
 
-func create(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) *core.ApplicationObservation {
+func CreateApplication(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) *core.ApplicationObservation {
 	t.Helper()
 	err := srv.CreateApplication(context.Background(), app)
 	if err != nil {
@@ -121,7 +121,7 @@ func create(t *testing.T, srv ApplicationService, app *core.ApplicationParameter
 	return createdApp
 }
 
-func delete(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) {
+func DeleteApplication(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) {
 	t.Helper()
 	err := srv.DeleteApplication(context.Background(), app)
 	if err != nil {
@@ -138,7 +138,7 @@ func delete(t *testing.T, srv ApplicationService, app *core.ApplicationParameter
 	}
 }
 
-func assertApplicationAreEqual(t *testing.T, srv ApplicationService, actual *core.ApplicationObservation, expected *core.ApplicationParameters) {
+func AssertApplicationAreEqual(t *testing.T, srv ApplicationService, actual *core.ApplicationObservation, expected *core.ApplicationParameters) {
 	t.Helper()
 	mappedActual, err := srv.MapToApplicationCompare(actual)
 	if err != nil {
@@ -153,11 +153,5 @@ func assertApplicationAreEqual(t *testing.T, srv ApplicationService, actual *cor
 	diff := cmp.Diff(mappedActual, mappedExpected)
 	if diff != "" {
 		t.Fatal(diff)
-	}
-}
-
-func skipIfIsShort(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
 	}
 }

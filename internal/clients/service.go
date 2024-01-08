@@ -46,3 +46,7 @@ func NewDataFlowService(configData []byte) (*DataFlowServiceImpl, error) {
 func NewApplicationService(configData []byte) (ApplicationService, error) {
 	return NewDataFlowService(configData)
 }
+
+func NewTaskDefinitionService(configData []byte) (TaskDefinitionService, error) {
+	return NewDataFlowService(configData)
+}
