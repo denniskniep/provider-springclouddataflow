@@ -7,3 +7,9 @@ func skipIfIsShort(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 }
+
+func getJsonConfig() string {
+	return `{
+		"url": "http://localhost:9393"
+	}`
+}

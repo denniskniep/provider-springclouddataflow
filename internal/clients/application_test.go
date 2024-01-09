@@ -9,9 +9,7 @@ import (
 )
 
 func CreateApplicationService(t *testing.T) ApplicationService {
-	jsonConfig := `{
-		"Uri": "http://localhost:9393/"
-	}`
+	jsonConfig := getJsonConfig()
 
 	srv, err := NewApplicationService([]byte(jsonConfig))
 	if err != nil {

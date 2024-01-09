@@ -9,9 +9,7 @@ import (
 )
 
 func CreateTaskDefinitionService(t *testing.T) TaskDefinitionService {
-	jsonConfig := `{
-		"Uri": "http://localhost:9393/"
-	}`
+	jsonConfig := getJsonConfig()
 
 	srv, err := NewTaskDefinitionService([]byte(jsonConfig))
 	if err != nil {

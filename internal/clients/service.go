@@ -50,3 +50,7 @@ func NewApplicationService(configData []byte) (ApplicationService, error) {
 func NewTaskDefinitionService(configData []byte) (TaskDefinitionService, error) {
 	return NewDataFlowService(configData)
 }
+
+func NewTaskScheduleService(configData []byte) (TaskScheduleService, error) {
+	return NewDataFlowService(configData)
+}

@@ -76,8 +76,8 @@ github.com/dave/jennifer v1.4.1/go.mod h1:7jEdnm+qBcxl8PC0zyp7vxcpSRnzXSt9r39tpT
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2 v2.11.2-prerelease1 h1:k0oM27YHtXKY/DM2wLMwFh3czaerVfFMqM+gkzyUQV8=
-github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2 v2.11.2-prerelease1/go.mod h1:Umr0NPkL2c3rFgYat/09muAkHUme3AklLOy2pQfTF2o=
+github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2 v2.11.2-1.2.0 h1:cY4i8MfIJuYv0huZB4kBQSOXzv1r0ptotVqazlOM7Eo=
+github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2 v2.11.2-1.2.0/go.mod h1:Umr0NPkL2c3rFgYat/09muAkHUme3AklLOy2pQfTF2o=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
 github.com/emicklei/go-restful/v3 v3.10.2 h1:hIovbnmBTLjHXkqEBUz3HGpXZdM7ZrE9fJIZIqlJLqE=
 github.com/emicklei/go-restful/v3 v3.10.2/go.mod h1:6n3XBCmQQb25CM2LCACGz8ukIrRry+4bhvbpWn3mrbc=

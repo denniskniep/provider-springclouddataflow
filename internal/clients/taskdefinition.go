@@ -35,8 +35,8 @@ type TaskDefinitionDescribeResponse struct {
 	Status              string `json:"status"`
 }
 
-func (s *DataFlowServiceImpl) MapToTaskDefinitionCompare(app interface{}) (*TaskDefinitionCompare, error) {
-	taskJson, err := json.Marshal(app)
+func (s *DataFlowServiceImpl) MapToTaskDefinitionCompare(taskDefinition interface{}) (*TaskDefinitionCompare, error) {
+	taskJson, err := json.Marshal(taskDefinition)
 	if err != nil {
 		return nil, err
 	}

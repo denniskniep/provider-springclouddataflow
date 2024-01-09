@@ -85,6 +85,7 @@ spec:
 Currently covered Managed Resources:
 - [Application](#application)
 - [TaskDefinition](#taskdefinition)
+- [TaskSchedule](#taskschedule)
 
 ## Application 
 
@@ -127,6 +128,25 @@ spec:
     name: "MyTask01"
     description: "Test Task"
     definition: "App001"
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config
+```
+
+## TaskSchedule 
+
+[docs](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#_the_scheduler) 
+
+[rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#api-guide-resources-task-scheduler)
+
+Example:
+```
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: TaskSchedule
+metadata:
+  name: schedule-1
+spec:
+  forProvider:
+    name: "MyTaskSchedule01"
   providerConfigRef:
     name: provider-spring-cloud-dataflow-config
 ```

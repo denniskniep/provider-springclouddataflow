@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/crossplane/crossplane-runtime v1.14.0-rc.0.0.20230815060607-4f3cb3d9fd2b
 	github.com/crossplane/crossplane-tools v0.0.0-20230714144037-2684f4bc7638
-	github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2 v2.11.2-prerelease1
+	github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2 v2.11.2-1.2.0
 	github.com/google/go-cmp v0.6.0
 	github.com/pkg/errors v0.9.1
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
