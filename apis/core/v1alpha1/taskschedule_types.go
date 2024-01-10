@@ -30,6 +30,7 @@ type TaskScheduleParameters struct {
 
 	// Name of the task schedule (immutable)
 	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Pattern=[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*
 	// +kubebuilder:validation:MaxLength=52
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Name is immutable"
 	ScheduleName string `json:"scheduleName"`

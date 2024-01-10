@@ -92,6 +92,7 @@ spec:
                   scheduleName:
                     description: Name of the task schedule (immutable)
                     maxLength: 52
+                    pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
                     type: string
                     x-kubernetes-validations:
                     - message: Name is immutable

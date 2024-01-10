@@ -140,16 +140,35 @@ spec:
 
 Example:
 ```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+  namespace: default
+type: Opaque
+stringData:
+  credentialA: SecretA
+  credentialB: SecretB
+---
 apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
 kind: TaskSchedule
 metadata:
   name: schedule-1
 spec:
   forProvider:
-    name: "MyTaskSchedule01"
+    scheduleName: "myschedule01"
+    taskDefinitionNameRef: 
+      name: "task-1"
+    cronExpression: "* * * * *"
+    platform: "default"
+    arguments: "--myarg1=value1 --myarg2=value2"
+    properties: "scheduler.kubernetes.jobAnnotations=annotation1:value1,annotation2:value2,scheduler.kubernetes.secretRefs=[my-secret]"
   providerConfigRef:
     name: provider-spring-cloud-dataflow-config
 ```
+
+Reference for properties: https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#configuration-kubernetes-app-props
+
 
 # Contribute
 ## Developing
