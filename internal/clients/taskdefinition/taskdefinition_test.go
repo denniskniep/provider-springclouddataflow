@@ -1,15 +1,17 @@
-package clients
+package taskdefinition
 
 import (
 	"testing"
 
 	core "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
+	"github.com/denniskniep/provider-springclouddataflow/internal/clients"
+	"github.com/denniskniep/provider-springclouddataflow/internal/clients/application"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/net/context"
 )
 
-func CreateTaskDefinitionService(t *testing.T) TaskDefinitionService {
-	jsonConfig := getJsonConfig()
+func CreateTaskDefinitionService(t *testing.T) *TaskDefinitionService {
+	jsonConfig := clients.GetJsonConfigForTests()
 
 	srv, err := NewTaskDefinitionService([]byte(jsonConfig))
 	if err != nil {
@@ -30,7 +32,7 @@ func CreateDefaultTaskDefinition(name string, description string, definition str
 func TestCreateTaskDefinition(t *testing.T) {
 	skipIfIsShort(t)
 
-	srvApp := CreateApplicationService(t)
+	srvApp := application.C
 	srvTask := CreateTaskDefinitionService(t)
 
 	testApp := CreateDefaultApplication("task", "Test010", "v1.0.0")
@@ -45,14 +47,14 @@ func TestCreateTaskDefinition(t *testing.T) {
 	DeleteApplication(t, srvApp, testApp)
 }
 
-func CreateTaskDefinition(t *testing.T, srv TaskDefinitionService, task *core.TaskDefinitionParameters) *core.TaskDefinitionObservation {
+func CreateTaskDefinition(t *testing.T, srv *TaskDefinitionService, task *core.TaskDefinitionParameters) *core.TaskDefinitionObservation {
 	t.Helper()
-	err := srv.CreateTaskDefinition(context.Background(), task)
+	err := srv.Create(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	createdTask, err := srv.DescribeTaskDefinition(context.Background(), task)
+	createdTask, err := srv.Describe(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,14 +65,14 @@ func CreateTaskDefinition(t *testing.T, srv TaskDefinitionService, task *core.Ta
 	return createdTask
 }
 
-func DeleteTaskDefinition(t *testing.T, srv TaskDefinitionService, task *core.TaskDefinitionParameters) {
+func DeleteTaskDefinition(t *testing.T, srv *TaskDefinitionService, task *core.TaskDefinitionParameters) {
 	t.Helper()
-	err := srv.DeleteTaskDefinition(context.Background(), task)
+	err := srv.Delete(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	noApp, err := srv.DescribeTaskDefinition(context.Background(), task)
+	noApp, err := srv.Describe(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,14 +82,14 @@ func DeleteTaskDefinition(t *testing.T, srv TaskDefinitionService, task *core.Ta
 	}
 }
 
-func AssertTaskDefinitionAreEqual(t *testing.T, srv TaskDefinitionService, actual *core.TaskDefinitionObservation, expected *core.TaskDefinitionParameters) {
+func AssertTaskDefinitionAreEqual(t *testing.T, srv *TaskDefinitionService, actual *core.TaskDefinitionObservation, expected *core.TaskDefinitionParameters) {
 	t.Helper()
-	mappedActual, err := srv.MapToTaskDefinitionCompare(actual)
+	mappedActual, err := srv.MapToCompare(actual)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	mappedExpected, err := srv.MapToTaskDefinitionCompare(expected)
+	mappedExpected, err := srv.MapToCompare(expected)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,5 +97,11 @@ func AssertTaskDefinitionAreEqual(t *testing.T, srv TaskDefinitionService, actua
 	diff := cmp.Diff(mappedActual, mappedExpected)
 	if diff != "" {
 		t.Fatal(diff)
+	}
+}
+
+func skipIfIsShort(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
 	}
 }

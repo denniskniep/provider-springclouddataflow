@@ -1,4 +1,4 @@
-package clients
+package taskschedule
 
 import (
 	"testing"
@@ -54,12 +54,12 @@ func CreateDefaultTaskSchedule(scheduleName string, taskDefinitionName string) *
 
 func CreateTaskSchedule(t *testing.T, srv TaskScheduleService, task *core.TaskScheduleParameters) *core.TaskScheduleObservation {
 	t.Helper()
-	err := srv.CreateTaskSchedule(context.Background(), task)
+	err := srv.Create(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	createdTask, err := srv.DescribeTaskSchedule(context.Background(), task)
+	createdTask, err := srv.Describe(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,12 +72,12 @@ func CreateTaskSchedule(t *testing.T, srv TaskScheduleService, task *core.TaskSc
 
 func DeleteTaskSchedule(t *testing.T, srv TaskScheduleService, task *core.TaskScheduleParameters) {
 	t.Helper()
-	err := srv.DeleteTaskSchedule(context.Background(), task)
+	err := srv.Delete(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	noApp, err := srv.DescribeTaskSchedule(context.Background(), task)
+	noApp, err := srv.Describe(context.Background(), task)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -89,12 +89,12 @@ func DeleteTaskSchedule(t *testing.T, srv TaskScheduleService, task *core.TaskSc
 
 func AssertTaskScheduleAreEqual(t *testing.T, srv TaskScheduleService, actual *core.TaskScheduleObservation, expected *core.TaskScheduleParameters) {
 	t.Helper()
-	mappedActual, err := srv.MapToTaskScheduleCompare(actual)
+	mappedActual, err := srv.MapToCompare(actual)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	mappedExpected, err := srv.MapToTaskScheduleCompare(expected)
+	mappedExpected, err := srv.MapToCompare(expected)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -102,5 +102,11 @@ func AssertTaskScheduleAreEqual(t *testing.T, srv TaskScheduleService, actual *c
 	diff := cmp.Diff(mappedActual, mappedExpected)
 	if diff != "" {
 		t.Fatal(diff)
+	}
+}
+
+func skipIfIsShort(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
 	}
 }

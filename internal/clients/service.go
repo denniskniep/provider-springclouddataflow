@@ -1,8 +1,11 @@
 package clients
 
 import (
+	"context"
 	"encoding/json"
 
+	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
+	"github.com/crossplane/crossplane-runtime/pkg/resource"
 	client "github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2/client"
 	auth "github.com/microsoft/kiota-abstractions-go/authentication"
 	http "github.com/microsoft/kiota-http-go"
@@ -12,11 +15,15 @@ type DataFlowServiceConfig struct {
 	Url string `json:"url"`
 }
 
-type DataFlowServiceImpl struct {
+type DataFlowService struct {
 	client *client.DataFlowClient
 }
 
-func NewDataFlowService(configData []byte) (*DataFlowServiceImpl, error) {
+func (s *DataFlowService) Client() *client.DataFlowClient {
+	return s.client
+}
+
+func NewDataFlowService(configData []byte) (*DataFlowService, error) {
 	var conf = DataFlowServiceConfig{}
 	err := json.Unmarshal(configData, &conf)
 	if err != nil {
@@ -38,19 +45,30 @@ func NewDataFlowService(configData []byte) (*DataFlowServiceImpl, error) {
 	// Create the API client
 	client := client.NewDataFlowClient(adapter)
 
-	return &DataFlowServiceImpl{
+	return &DataFlowService{
 		client: client,
 	}, err
 }
 
-func NewApplicationService(configData []byte) (ApplicationService, error) {
-	return NewDataFlowService(configData)
+// R=* (i.e Application)
+// P=*Parameters (i.e ApplicationParameters)
+// O=*Observation (i.e ApplicationObservation)
+// C=*Compare (i.e ApplicationCompare)
+type Service[R resource.Managed, P any, O any, C any] interface {
+	Describe(ctx context.Context, param *P) (*O, error)
+
+	Create(ctx context.Context, param *P) error
+	Update(ctx context.Context, param *P) error
+	Delete(ctx context.Context, param *P) error
+
+	GetSpec(obj R) *P
+	GetStatus(obj R) *O
+	SetStatus(obj R, status *O)
+	CreateUniqueIdentifier(*P, *O) (*string, error)
 }
 
-func NewTaskDefinitionService(configData []byte) (TaskDefinitionService, error) {
-	return NewDataFlowService(configData)
-}
-
-func NewTaskScheduleService(configData []byte) (TaskScheduleService, error) {
-	return NewDataFlowService(configData)
+func GetJsonConfigForTests() string {
+	return `{
+		"url": "http://localhost:9393"
+	}`
 }

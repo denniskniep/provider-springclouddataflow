@@ -138,7 +138,7 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 
 	uniqueId := createUniqueIdentifier(&cr.Spec.ForProvider)
 
-	observed, err := c.service.DescribeTaskSchedule(ctx, &cr.Spec.ForProvider)
+	observed, err := c.service.Describe(ctx, &cr.Spec.ForProvider)
 	if err != nil {
 		return managed.ExternalObservation{}, errors.Wrap(err, errDescribe)
 	}
@@ -158,12 +158,12 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	cr.Status.AtProvider = *observed
 	cr.SetConditions(xpv1.Available().WithMessage("TaskSchedule exists"))
 
-	observedCompareable, err := c.service.MapToTaskScheduleCompare(observed)
+	observedCompareable, err := c.service.MapToCompare(observed)
 	if err != nil {
 		return managed.ExternalObservation{}, errors.Wrap(err, errMapping)
 	}
 
-	specCompareable, err := c.service.MapToTaskScheduleCompare(&cr.Spec.ForProvider)
+	specCompareable, err := c.service.MapToCompare(&cr.Spec.ForProvider)
 	if err != nil {
 		return managed.ExternalObservation{}, errors.Wrap(err, errMapping)
 	}
@@ -198,7 +198,7 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalCreation{}, errors.New(errNotTaskSchedule)
 	}
 
-	err := c.service.CreateTaskSchedule(ctx, &cr.Spec.ForProvider)
+	err := c.service.Create(ctx, &cr.Spec.ForProvider)
 
 	if err != nil {
 		return managed.ExternalCreation{}, errors.Wrap(err, errCreate)
@@ -223,7 +223,7 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalUpdate{}, errors.New(errNotTaskSchedule)
 	}
 
-	err := c.service.UpdateTaskSchedule(ctx, &cr.Spec.ForProvider)
+	err := c.service.Update(ctx, &cr.Spec.ForProvider)
 
 	if err != nil {
 		return managed.ExternalUpdate{}, errors.Wrap(err, errUpdate)
@@ -246,7 +246,7 @@ func (c *external) Delete(ctx context.Context, mg resource.Managed) error {
 		return errors.New(errNotTaskSchedule)
 	}
 
-	err := c.service.DeleteTaskSchedule(ctx, &cr.Spec.ForProvider)
+	err := c.service.Delete(ctx, &cr.Spec.ForProvider)
 
 	if err != nil {
 		return errors.Wrap(err, errDelete)

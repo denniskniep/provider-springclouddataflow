@@ -1,15 +1,16 @@
-package clients
+package application
 
 import (
 	"testing"
 
 	core "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
+	"github.com/denniskniep/provider-springclouddataflow/internal/clients"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/net/context"
 )
 
-func CreateApplicationService(t *testing.T) ApplicationService {
-	jsonConfig := getJsonConfig()
+func CreateApplicationService(t *testing.T) *ApplicationService {
+	jsonConfig := clients.GetJsonConfigForTests()
 
 	srv, err := NewApplicationService([]byte(jsonConfig))
 	if err != nil {
@@ -75,14 +76,14 @@ func TestUpdate(t *testing.T) {
 	UpdateApplication(t, srv, testAppV1)
 	UpdateApplication(t, srv, testAppV2)
 
-	foundAppV1, err := srv.DescribeApplication(context.Background(), testAppV1)
+	foundAppV1, err := srv.Describe(context.Background(), testAppV1)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	AssertApplicationAreEqual(t, srv, foundAppV1, testAppV1)
 
-	foundAppV2, err := srv.DescribeApplication(context.Background(), testAppV2)
+	foundAppV2, err := srv.Describe(context.Background(), testAppV2)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,22 +94,22 @@ func TestUpdate(t *testing.T) {
 	DeleteApplication(t, srv, testAppV2)
 }
 
-func UpdateApplication(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) {
+func UpdateApplication(t *testing.T, srv *ApplicationService, app *core.ApplicationParameters) {
 	t.Helper()
-	err := srv.UpdateApplication(context.Background(), app)
+	err := srv.Update(context.Background(), app)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func CreateApplication(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) *core.ApplicationObservation {
+func CreateApplication(t *testing.T, srv *ApplicationService, app *core.ApplicationParameters) *core.ApplicationObservation {
 	t.Helper()
-	err := srv.CreateApplication(context.Background(), app)
+	err := srv.Create(context.Background(), app)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	createdApp, err := srv.DescribeApplication(context.Background(), app)
+	createdApp, err := srv.Describe(context.Background(), app)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -119,14 +120,14 @@ func CreateApplication(t *testing.T, srv ApplicationService, app *core.Applicati
 	return createdApp
 }
 
-func DeleteApplication(t *testing.T, srv ApplicationService, app *core.ApplicationParameters) {
+func DeleteApplication(t *testing.T, srv *ApplicationService, app *core.ApplicationParameters) {
 	t.Helper()
-	err := srv.DeleteApplication(context.Background(), app)
+	err := srv.Delete(context.Background(), app)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	noApp, err := srv.DescribeApplication(context.Background(), app)
+	noApp, err := srv.Describe(context.Background(), app)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -136,7 +137,7 @@ func DeleteApplication(t *testing.T, srv ApplicationService, app *core.Applicati
 	}
 }
 
-func AssertApplicationAreEqual(t *testing.T, srv ApplicationService, actual *core.ApplicationObservation, expected *core.ApplicationParameters) {
+func AssertApplicationAreEqual(t *testing.T, srv *ApplicationService, actual *core.ApplicationObservation, expected *core.ApplicationParameters) {
 	t.Helper()
 	mappedActual, err := srv.MapToApplicationCompare(actual)
 	if err != nil {
@@ -151,5 +152,11 @@ func AssertApplicationAreEqual(t *testing.T, srv ApplicationService, actual *cor
 	diff := cmp.Diff(mappedActual, mappedExpected)
 	if diff != "" {
 		t.Fatal(diff)
+	}
+}
+
+func skipIfIsShort(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
 	}
 }

@@ -5,7 +5,7 @@ Spring Cloud Data Flow Provider is a [Crossplane](https://www.crossplane.io/) pr
 # How to use 
 Repository and package:
 ```
-xpkg.upbound.io/denniskniep/provider-springclouddataflow:v0.0.1
+xpkg.upbound.io/denniskniep/provider-springclouddataflow:<version>
 ```
 
 Provider Credentials:
@@ -22,7 +22,7 @@ kind: Provider
 metadata:
   name: provider-spring-cloud-dataflow
 spec:
-  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:v0.0.1
+  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:<version>
   packagePullPolicy: IfNotPresent
   revisionActivationPolicy: Automatic
 ---
@@ -103,8 +103,8 @@ spec:
   forProvider:
     name: "App001"
     type: "task"
-    version: "v1.0.0"
-    uri: "docker://hello-world:v1.0.0"
+    version: "3.0.0"
+    uri: "docker:springcloudtask/timestamp-task:3.0.0"
     bootVersion: "2"
     defaultVersion: true
   providerConfigRef:
