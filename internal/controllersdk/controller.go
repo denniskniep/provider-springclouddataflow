@@ -138,7 +138,7 @@ func Observe[R resource.Managed, P any, O any, C any](ctx context.Context, logge
 	logger = logger.WithValues("method", "observe")
 	logger.Debug("Start observe")
 
-	cr, spec, status, err := cast(srv, mg)
+	cr, spec, status, err := cast[R, P, O, C](srv, mg)
 	if err != nil {
 		return managed.ExternalObservation{}, errors.Wrap(err, errExtract)
 	}
@@ -202,7 +202,7 @@ func Observe[R resource.Managed, P any, O any, C any](ctx context.Context, logge
 func Create[R resource.Managed, P any, O any, C any](ctx context.Context, logger logging.Logger, srv clients.Service[R, P, O, C], mg resource.Managed) (managed.ExternalCreation, error) {
 	logger = logger.WithValues("method", "create")
 	logger.Debug("Start create")
-	cr, spec, status, err := cast(srv, mg)
+	cr, spec, status, err := cast[R, P, O, C](srv, mg)
 	if err != nil {
 		return managed.ExternalCreation{}, errors.Wrap(err, errExtract)
 	}
@@ -231,7 +231,7 @@ func Update[R resource.Managed, P any, O any, C any](ctx context.Context, logger
 	logger = logger.WithValues("method", "update")
 	logger.Debug("Start update")
 
-	_, spec, status, err := cast(srv, mg)
+	_, spec, status, err := cast[R, P, O, C](srv, mg)
 	if err != nil {
 		return managed.ExternalUpdate{}, errors.Wrap(err, errExtract)
 	}
@@ -259,7 +259,7 @@ func Delete[R resource.Managed, P any, O any, C any](ctx context.Context, logger
 	logger = logger.WithValues("method", "delete")
 	logger.Debug("Start delete")
 
-	_, spec, status, err := cast(srv, mg)
+	_, spec, status, err := cast[R, P, O, C](srv, mg)
 	if err != nil {
 		return err
 	}

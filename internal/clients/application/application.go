@@ -3,8 +3,11 @@ package application
 import (
 	"context"
 	"encoding/json"
-	"errors"
+	"testing"
 
+	"github.com/pkg/errors"
+
+	"github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	core "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	"github.com/denniskniep/provider-springclouddataflow/internal/clients"
 	"github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2/client/apps"
@@ -12,6 +15,7 @@ import (
 )
 
 const (
+	errConnecting     = "failed to connect"
 	errNotApplication = "managed resource is not a Application custom resource"
 )
 
@@ -19,11 +23,11 @@ type ApplicationService struct {
 	clients.DataFlowService
 }
 
-func NewApplicationService(configData []byte) (clients.Service[*core.Application, core.ApplicationParameters, core.ApplicationObservation, ApplicationCompare], error) {
+func NewApplicationService(configData []byte) (clients.Service[*v1alpha1.Application, v1alpha1.ApplicationParameters, v1alpha1.ApplicationObservation, ApplicationCompare], error) {
 	dataFlowService, err := clients.NewDataFlowService(configData)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, errConnecting)
 	}
 
 	return &ApplicationService{
@@ -122,4 +126,30 @@ func (s *ApplicationService) Delete(ctx context.Context, app *core.ApplicationPa
 	}
 
 	return nil
+}
+
+func (s *ApplicationService) MakeCompare() *ApplicationCompare {
+	return &ApplicationCompare{}
+}
+
+func TestNewApplicationService(t *testing.T) clients.Service[*v1alpha1.Application, v1alpha1.ApplicationParameters, v1alpha1.ApplicationObservation, ApplicationCompare] {
+	jsonConfig := clients.GetJsonConfigForTests()
+
+	srv, err := NewApplicationService([]byte(jsonConfig))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return srv
+}
+
+func TestMakeDefaultApplication(appType string, name string, version string) *core.ApplicationParameters {
+	return &core.ApplicationParameters{
+		Type:           appType,
+		Name:           name,
+		Version:        version,
+		Uri:            "docker://hello-world:" + version,
+		BootVersion:    "2",
+		DefaultVersion: true,
+	}
 }

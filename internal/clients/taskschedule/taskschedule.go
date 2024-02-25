@@ -3,7 +3,8 @@ package taskschedule
 import (
 	"context"
 	"encoding/json"
-	"errors"
+
+	"github.com/pkg/errors"
 
 	core "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	"github.com/denniskniep/provider-springclouddataflow/internal/clients"
@@ -12,6 +13,7 @@ import (
 )
 
 const (
+	errConnecting      = "failed to connect"
 	errNotTaskSchedule = "managed resource is not a TaskSchedule custom resource"
 )
 
@@ -19,11 +21,11 @@ type TaskScheduleService struct {
 	clients.DataFlowService
 }
 
-func NewTaskScheduleService(configData []byte) (clients.Service[*core.TaskSchedule, core.TaskScheduleParameters, core.TaskScheduleObservation, TaskScheduleCompare], error) {
+func NewTaskScheduleService(configData []byte) (*TaskScheduleService, error) {
 	dataFlowService, err := clients.NewDataFlowService(configData)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, errConnecting)
 	}
 
 	return &TaskScheduleService{
@@ -115,4 +117,8 @@ func (s *TaskScheduleService) Delete(ctx context.Context, task *core.TaskSchedul
 	}
 
 	return nil
+}
+
+func (s *TaskScheduleService) MakeCompare() *TaskScheduleCompare {
+	return &TaskScheduleCompare{}
 }

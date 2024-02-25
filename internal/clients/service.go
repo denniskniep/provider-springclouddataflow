@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 	client "github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2/client"
 	auth "github.com/microsoft/kiota-abstractions-go/authentication"
@@ -63,8 +62,11 @@ type Service[R resource.Managed, P any, O any, C any] interface {
 
 	GetSpec(obj R) *P
 	GetStatus(obj R) *O
+
 	SetStatus(obj R, status *O)
 	CreateUniqueIdentifier(*P, *O) (*string, error)
+
+	MakeCompare() *C
 }
 
 func GetJsonConfigForTests() string {

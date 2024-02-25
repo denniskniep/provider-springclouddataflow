@@ -3,8 +3,11 @@ package taskdefinition
 import (
 	"context"
 	"encoding/json"
-	"errors"
+	"testing"
 
+	"github.com/pkg/errors"
+
+	"github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	core "github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	"github.com/denniskniep/provider-springclouddataflow/internal/clients"
 	"github.com/denniskniep/spring-cloud-dataflow-sdk-go/v2/client/tasks"
@@ -13,17 +16,18 @@ import (
 
 const (
 	errNotTaskDefinition = "managed resource is not a TaskDefinition custom resource"
+	errConnecting        = "failed to connect"
 )
 
 type TaskDefinitionService struct {
 	clients.DataFlowService
 }
 
-func NewTaskDefinitionService(configData []byte) (clients.Service[*core.TaskDefinition, core.TaskDefinitionParameters, core.TaskDefinitionObservation, TaskDefinitionCompare], error) {
+func NewTaskDefinitionService(configData []byte) (clients.Service[*v1alpha1.TaskDefinition, v1alpha1.TaskDefinitionParameters, v1alpha1.TaskDefinitionObservation, TaskDefinitionCompare], error) {
 	dataFlowService, err := clients.NewDataFlowService(configData)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, errConnecting)
 	}
 
 	return &TaskDefinitionService{
@@ -126,4 +130,27 @@ func (s *TaskDefinitionService) Delete(ctx context.Context, task *core.TaskDefin
 	}
 
 	return nil
+}
+
+func (s *TaskDefinitionService) MakeCompare() *TaskDefinitionCompare {
+	return &TaskDefinitionCompare{}
+}
+
+func TestNewTaskDefinitionService(t *testing.T) clients.Service[*v1alpha1.TaskDefinition, v1alpha1.TaskDefinitionParameters, v1alpha1.TaskDefinitionObservation, TaskDefinitionCompare] {
+	jsonConfig := clients.GetJsonConfigForTests()
+
+	srv, err := NewTaskDefinitionService([]byte(jsonConfig))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return srv
+}
+
+func TestMakeDefaultTaskDefinition(name string, description string, definition string) *core.TaskDefinitionParameters {
+	return &core.TaskDefinitionParameters{
+		Name:        name,
+		Description: description,
+		Definition:  definition,
+	}
 }
