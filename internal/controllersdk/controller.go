@@ -2,6 +2,7 @@ package controllersdk
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"encoding/json"
@@ -18,18 +19,18 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/logging"
 	"github.com/crossplane/crossplane-runtime/pkg/meta"
 	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
-	"github.com/denniskniep/provider-springclouddataflow/apis/core/v1alpha1"
 	apisv1alpha1 "github.com/denniskniep/provider-springclouddataflow/apis/v1alpha1"
 	"github.com/denniskniep/provider-springclouddataflow/internal/clients"
 	"github.com/denniskniep/provider-springclouddataflow/internal/features"
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
-	errNotType      = "managed resource is not of spcific custom resource type"
+	errNotType      = "managed resource is not of specific custom resource type"
 	errTrackPCUsage = "cannot track ProviderConfig usage"
 	errGetPC        = "cannot get ProviderConfig"
 	errGetCreds     = "cannot get credentials"
@@ -55,8 +56,9 @@ type Connector[R resource.Managed] struct {
 	NewExternalClientFn func(conn *Connector[R], creds []byte) (managed.ExternalClient, error)
 }
 
-// Setup adds a controller that reconciles Application managed resources.
-func Setup[R resource.Managed](name string, mgr ctrl.Manager, o controller.Options, newExternalClientFn func(conn *Connector[R], creds []byte) (managed.ExternalClient, error)) error {
+// Setup adds a controller that reconciles managed resources.
+func Setup[R resource.Managed](groupVersionKind schema.GroupVersionKind, newInstance R, mgr ctrl.Manager, o controller.Options, newExternalClientFn func(conn *Connector[R], creds []byte) (managed.ExternalClient, error)) error {
+	name := managed.ControllerName(groupVersionKind.GroupKind().String())
 	o.Logger.Info("Setup Controller: " + name)
 
 	cps := []managed.ConnectionPublisher{managed.NewAPISecretPublisher(mgr.GetClient(), mgr.GetScheme())}
@@ -65,7 +67,7 @@ func Setup[R resource.Managed](name string, mgr ctrl.Manager, o controller.Optio
 	}
 
 	r := managed.NewReconciler(mgr,
-		resource.ManagedKind(v1alpha1.ApplicationGroupVersionKind),
+		resource.ManagedKind(groupVersionKind),
 		managed.WithExternalConnecter(&Connector[R]{
 			Kube:                mgr.GetClient(),
 			Usage:               resource.NewProviderConfigUsageTracker(mgr.GetClient(), &apisv1alpha1.ProviderConfigUsage{}),
@@ -82,7 +84,7 @@ func Setup[R resource.Managed](name string, mgr ctrl.Manager, o controller.Optio
 		Named(name).
 		WithOptions(o.ForControllerRuntime()).
 		WithEventFilter(resource.DesiredStateChanged()).
-		For(&v1alpha1.Application{}).
+		For(newInstance).
 		Complete(ratelimiter.NewReconciler(name, r, o.GlobalRateLimiter))
 }
 
@@ -92,7 +94,8 @@ func (c *Connector[R]) Connect(ctx context.Context, mg resource.Managed) (manage
 
 	cr, ok := mg.(R)
 	if !ok {
-		return nil, errors.New(errNotType)
+		errMsg := fmt.Sprintf(" (expected %T, but got %T)", *new(R), mg)
+		return nil, errors.New(errNotType + errMsg)
 	}
 
 	if err := c.Usage.Track(ctx, mg); err != nil {
@@ -169,7 +172,7 @@ func Observe[R resource.Managed, P any, O any, C any](ctx context.Context, logge
 
 	// Update Status
 	srv.SetStatus(crWithAssert, observed)
-	cr.SetConditions(xpv1.Available().WithMessage("Application exists"))
+	cr.SetConditions(xpv1.Available().WithMessage("Managed resource exists"))
 
 	observedCompareable, err := MapToCompare[C](observed)
 	if err != nil {
@@ -282,7 +285,8 @@ func Delete[R resource.Managed, P any, O any, C any](ctx context.Context, logger
 func cast[R resource.Managed, P any, O any, C any](srv clients.Service[R, P, O, C], mg resource.Managed) (resource.Managed, *P, *O, error) {
 	cr, ok := mg.(R)
 	if !ok {
-		return nil, nil, nil, errors.New(errNotType)
+		errMsg := fmt.Sprintf(" (expected %T, but got %T)", *new(R), mg)
+		return nil, nil, nil, errors.New(errNotType + errMsg)
 	}
 
 	return cr, srv.GetSpec(cr), srv.GetStatus(cr), nil

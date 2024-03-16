@@ -37,8 +37,7 @@ func newExternalClient[R resource.Managed](conn *controllersdk.Connector[R], cre
 }
 
 func Setup(mgr ctrl.Manager, o controller.Options) error {
-	name := managed.ControllerName(v1alpha1.TaskDefinitionGroupKind)
-	return controllersdk.Setup(name, mgr, o, newExternalClient[*v1alpha1.TaskDefinition])
+	return controllersdk.Setup(v1alpha1.TaskDefinitionGroupVersionKind, &v1alpha1.TaskDefinition{}, mgr, o, newExternalClient[*v1alpha1.TaskDefinition])
 }
 
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {

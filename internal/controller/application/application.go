@@ -37,8 +37,7 @@ func newExternalClient[R resource.Managed](conn *controllersdk.Connector[R], cre
 }
 
 func Setup(mgr ctrl.Manager, o controller.Options) error {
-	name := managed.ControllerName(v1alpha1.ApplicationGroupKind)
-	return controllersdk.Setup(name, mgr, o, newExternalClient[*v1alpha1.Application])
+	return controllersdk.Setup(v1alpha1.ApplicationGroupVersionKind, &v1alpha1.Application{}, mgr, o, newExternalClient[*v1alpha1.Application])
 }
 
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {
