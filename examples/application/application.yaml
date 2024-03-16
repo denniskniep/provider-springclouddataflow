@@ -1,0 +1,14 @@
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: Application
+metadata:
+  name: app-1
+spec:
+  forProvider:
+    name: "App001"
+    type: "task"
+    version: "3.0.0"
+    uri: "docker:springcloudtask/timestamp-task:3.0.0"
+    bootVersion: "2"
+    defaultVersion: true
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config

@@ -8,78 +8,19 @@ Repository and package:
 xpkg.upbound.io/denniskniep/provider-springclouddataflow:<version>
 ```
 
-Provider Credentials:
+Provider Credentials Structure:
 ```
 {
   "url": "http://dataflow:9393/"
 }
 ```
 
-Example:
-```
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-spring-cloud-dataflow
-spec:
-  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:<version>
-  packagePullPolicy: IfNotPresent
-  revisionActivationPolicy: Automatic
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: provider-spring-cloud-dataflow-config-creds
-  namespace: crossplane-system
-type: Opaque
-stringData:
-  credentials: |
-    {
-      "url": "http://dataflow:9393/"
-    }
----
-apiVersion: springclouddataflow.crossplane.io/v1alpha1
-kind: ProviderConfig
-metadata:
-  name: provider-spring-cloud-dataflow-config
-spec: 
-  credentials:
-    source: Secret
-    secretRef:
-      namespace: crossplane-system
-      name: provider-spring-cloud-dataflow-config-creds
-      key: credentials  
-```
-# Troubleshooting
-Create a DeploymentRuntimeConfig and set the arg `--debug` on the package-runtime container:
+[View Example](./examples/provider/provider.yaml)
 
-```
-apiVersion: pkg.crossplane.io/v1beta1
-kind: DeploymentRuntimeConfig
-metadata:
-  name: debug-config
-spec:
-  deploymentTemplate:
-    spec:
-      selector: {}
-      template:
-        spec:
-          containers:
-            - name: package-runtime
-              args:
-                - --debug
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-spring-cloud-dataflow
-spec:
-  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:v0.0.1
-  packagePullPolicy: IfNotPresent
-  revisionActivationPolicy: Automatic
-  runtimeConfigRef:
-    name: debug-config
-```
+# Troubleshooting
+Create a DeploymentRuntimeConfig and set the arg `--debug` on the package-runtime container
+
+[View Example](./examples/provider/troubleshooting.yaml)
 
 # Covered Managed Resources
 Currently covered Managed Resources:
@@ -94,44 +35,14 @@ Currently covered Managed Resources:
 
 [rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#resources-registered-applications)
 
-Example:
-```
-apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
-kind: Application
-metadata:
-  name: app-1
-spec:
-  forProvider:
-    name: "App001"
-    type: "task"
-    version: "3.0.0"
-    uri: "docker:springcloudtask/timestamp-task:3.0.0"
-    bootVersion: "2"
-    defaultVersion: true
-  providerConfigRef:
-    name: provider-spring-cloud-dataflow-config
-```
+[View Example](./examples/application/application.yaml)
 
 ## Stream
 [docs](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#spring-cloud-dataflow-streams) 
 
 [rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#api-guide-resources-stream-definitions)
 
-Example:
-```
-apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
-kind: Stream
-metadata:
-  name: stream-1
-spec:
-  forProvider:
-    name: "Stream01"
-    description: "Test Stream"
-    definition: "CHANGE | ME"
-    deploy: false
-  providerConfigRef:
-    name: provider-spring-cloud-dataflow-config
-```
+[View Example](./examples/stream/stream.yaml)
 
 
 ## TaskDefinition 
@@ -140,20 +51,7 @@ spec:
 
 [rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#api-guide-resources-task-definitions)
 
-Example:
-```
-apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
-kind: TaskDefinition
-metadata:
-  name: task-1
-spec:
-  forProvider:
-    name: "MyTask01"
-    description: "Test Task"
-    definition: "App001"
-  providerConfigRef:
-    name: provider-spring-cloud-dataflow-config
-```
+[View Example](./examples/taskdefinition/taskdefinition.yaml)
 
 ## TaskSchedule 
 
@@ -161,34 +59,7 @@ spec:
 
 [rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#api-guide-resources-task-scheduler)
 
-Example:
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: my-secret
-  namespace: default
-type: Opaque
-stringData:
-  credentialA: SecretA
-  credentialB: SecretB
----
-apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
-kind: TaskSchedule
-metadata:
-  name: schedule-1
-spec:
-  forProvider:
-    scheduleName: "myschedule01"
-    taskDefinitionNameRef: 
-      name: "task-1"
-    cronExpression: "* * * * *"
-    platform: "default"
-    arguments: "--myarg1=value1 --myarg2=value2"
-    properties: "scheduler.kubernetes.jobAnnotations=annotation1:value1,annotation2:value2,scheduler.kubernetes.secretRefs=[my-secret]"
-  providerConfigRef:
-    name: provider-spring-cloud-dataflow-config
-```
+[View Example](./examples/taskschedule/taskschedule.yaml)
 
 Reference for properties: https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#configuration-kubernetes-app-props
 

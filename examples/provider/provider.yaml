@@ -1,0 +1,32 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-spring-cloud-dataflow
+spec:
+  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:<version>
+  packagePullPolicy: IfNotPresent
+  revisionActivationPolicy: Automatic
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: provider-spring-cloud-dataflow-config-creds
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  credentials: |
+    {
+      "url": "http://dataflow:9393/"
+    }
+---
+apiVersion: springclouddataflow.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: provider-spring-cloud-dataflow-config
+spec: 
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: provider-spring-cloud-dataflow-config-creds
+      key: credentials  

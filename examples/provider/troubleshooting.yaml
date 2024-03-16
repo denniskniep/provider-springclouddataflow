@@ -1,0 +1,25 @@
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: debug-config
+spec:
+  deploymentTemplate:
+    spec:
+      selector: {}
+      template:
+        spec:
+          containers:
+            - name: package-runtime
+              args:
+                - --debug
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-spring-cloud-dataflow
+spec:
+  package: xpkg.upbound.io/denniskniep/provider-springclouddataflow:<version>
+  packagePullPolicy: IfNotPresent
+  revisionActivationPolicy: Automatic
+  runtimeConfigRef:
+    name: debug-config

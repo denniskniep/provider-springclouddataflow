@@ -1,0 +1,42 @@
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: Application
+metadata:
+  name: app-2
+spec:
+  forProvider:
+    name: "App002"
+    type: "source"
+    version: "1.0.0"
+    uri: "docker:springcloudtask/timestamp-task:3.0.0"
+    bootVersion: "2"
+    defaultVersion: true
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config
+---
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: Application
+metadata:
+  name: app-3
+spec:
+  forProvider:
+    name: "App003"
+    type: "sink"
+    version: "1.0.0"
+    uri: "docker:springcloudtask/timestamp-task:3.0.0"
+    bootVersion: "2"
+    defaultVersion: true
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config
+---
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: Stream
+metadata:
+  name: stream-1
+spec:
+  forProvider:
+    name: "Stream01"
+    description: "Test Stream"
+    definition: "App002 | App003"
+    deploy: false
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config
