@@ -207,7 +207,7 @@ jobs:
         env:          
           UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW: ${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW }}
         run: |
-          up login -t ${UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW}      
+          echo "${UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW}" | up login -t -
 
       - name: Checkout
         uses: actions/checkout@v2
