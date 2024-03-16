@@ -84,6 +84,7 @@ spec:
 # Covered Managed Resources
 Currently covered Managed Resources:
 - [Application](#application)
+- [Stream](#stream)
 - [TaskDefinition](#taskdefinition)
 - [TaskSchedule](#taskschedule)
 
@@ -110,6 +111,28 @@ spec:
   providerConfigRef:
     name: provider-spring-cloud-dataflow-config
 ```
+
+## Stream
+[docs](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#spring-cloud-dataflow-streams) 
+
+[rest api](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/#api-guide-resources-stream-definitions)
+
+Example:
+```
+apiVersion: core.springclouddataflow.crossplane.io/v1alpha1
+kind: Stream
+metadata:
+  name: stream-1
+spec:
+  forProvider:
+    name: "Stream01"
+    description: "Test Stream"
+    definition: "CHANGE | ME"
+    deploy: false
+  providerConfigRef:
+    name: provider-spring-cloud-dataflow-config
+```
+
 
 ## TaskDefinition 
 

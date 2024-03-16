@@ -80,7 +80,7 @@ func (s *TaskScheduleService) Create(ctx context.Context, task *core.TaskSchedul
 }
 
 func (s *TaskScheduleService) Update(ctx context.Context, task *core.TaskScheduleParameters) error {
-	return errors.New("Update not implemented - all properties are immutable!")
+	return errors.New("Update of TaskSchedule not implemented - all properties are immutable!")
 }
 
 func (s *TaskScheduleService) Describe(ctx context.Context, task *core.TaskScheduleParameters) (*core.TaskScheduleObservation, error) {

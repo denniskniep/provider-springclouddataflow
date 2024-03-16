@@ -20,10 +20,11 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/controller"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	application "github.com/denniskniep/provider-springclouddataflow/internal/controller/application"
+	"github.com/denniskniep/provider-springclouddataflow/internal/controller/application"
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/config"
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/taskdefinition"
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/taskschedule"
+	"github.com/denniskniep/provider-springclouddataflow/internal/controller/stream"
 )
 
 // Setup creates all SpringCloudDataFlow controllers with the supplied logger and adds them to
@@ -34,6 +35,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		application.Setup,
 		taskdefinition.Setup,
 		taskschedule.Setup,
+		stream.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
