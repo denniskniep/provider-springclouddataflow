@@ -22,9 +22,9 @@ import (
 
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/application"
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/config"
+	"github.com/denniskniep/provider-springclouddataflow/internal/controller/stream"
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/taskdefinition"
 	"github.com/denniskniep/provider-springclouddataflow/internal/controller/taskschedule"
-	"github.com/denniskniep/provider-springclouddataflow/internal/controller/stream"
 )
 
 // Setup creates all SpringCloudDataFlow controllers with the supplied logger and adds them to
